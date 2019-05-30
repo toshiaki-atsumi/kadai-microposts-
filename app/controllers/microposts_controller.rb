@@ -8,15 +8,18 @@ class MicropostsController < ApplicationController
       flash[:success] = 'メッセージを投稿しました。'
       redirect_to root_url
     else
-      @microposts = current_user.feed_microposts.order(id: :desc).page(params[:page])
+      @microposts = current_user.microposts.order(id: :desc).page(params[:page])
       flash.now[:danger] = 'メッセージの投稿に失敗しました。'
       render 'toppages/index'
     end
   end
 
   def destroy
-    @micropost.destroy
-    flash[:success] = 'メッセージを削除しました。'
+      favorites = Favorite.find_by(micropost_id:@micropost) 
+      favorites.destroy if favorites
+
+      @micropost.destroy
+      flash[:success] = 'メッセージを削除しました。'
     redirect_back(fallback_location: root_path)
   end
 
