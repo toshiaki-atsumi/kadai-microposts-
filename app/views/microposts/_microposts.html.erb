@@ -10,26 +10,24 @@
           <div>
             <p class="mb-0"><%= micropost.content %></p>
           </div>
+          
           <div>
-  
             <% if current_user == micropost.user %>
-              <%= link_to "Delete", micropost, method: :delete, data: { confirm: "You sure?" }, class: 'btn btn-danger btn-sm'%>
+               <%= link_to "Delete", micropost, method: :delete, data: { confirm: "You sure?" }, class: 'btn btn-danger btn-sm  '%>
+            <% end %>
+    
+            <% if current_user.favorites.find_by(micropost_id: micropost.id) %>
+              <%= form_with(model: current_user.favorites.find_by(micropost_id: micropost.id), local: true, method: :delete ) do |f| %>
+              <%= hidden_field_tag :micropost_id , micropost.id %>
+              <%= f.submit 'Unfavolite!', class: 'btn btn-success btn-sm '%>
+              <% end %>
             <% else %>
-
-                <% if current_user.favorite_microposts.include?(micropost)  %>
-                      
-                    <%= form_with(model: current_user.favorites.find_by(micropost_id: micropost.id), local: true, method: :delete ) do |f| %>
-                    <%= hidden_field_tag :micropost_id , micropost.id %>
-                    <%= f.submit 'Unfavolite!', class: 'btn btn-success btn-sm' %>                
-                    <% end %>
-                <% else %>
-
-                    <%= form_with(model: Favorite, local: true ) do |f| %>
-                    <%= hidden_field_tag :micropost_id , micropost.id %>
-                    <%= f.submit 'Favolite!', class: 'btn btn-light btn-sm' %>
-                    <% end %>
-                <% end %>
-            <% end %>    
+              <%= form_with(model: Favorite, local: true ) do |f| %>
+              <%= hidden_field_tag :micropost_id , micropost.id %>
+              <%= f.submit 'Favolite!', class: 'btn btn-light btn-sm' %>
+              <% end %>
+            <% end %>
+          
           </div>
         </div>
       </li>
